@@ -5,7 +5,7 @@ from math import sqrt
 
 
 def orth_triangle(cathet1 : float = 0, cathet2 : float = 0, hypotenuse : float = 0) -> float | None:
-    """Calculate a third side of rectangular triangle on two others sides"""
+    """Calculate third side of rectangular triangle on two others sides"""
     if hypotenuse != 0 and (hypotenuse < cathet1 or hypotenuse < cathet2) or (hypotenuse != 0 and cathet1 !=0 and cathet2 !=0):
         return None
     else:
