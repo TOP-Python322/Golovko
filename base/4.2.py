@@ -1,7 +1,7 @@
 # ===== 2 =====
 
 
-fruits =  []
+fruits = []
 print('Введите названия фруктов') 
 while True:
     fruit = input()
