@@ -1,5 +1,8 @@
+# ИСПРАВИТЬ: данная функция не возвращает None
 def countable_nouns(num: int, nouns: tuple[str, str, str]) -> str | None:
     """Returns the noun of Russian language compatible with number."""
+    # ПЕРЕИМЕНОВАТЬ: плохая идея использовать здесь _
+    # ИСПРАВИТЬ: с работой функции round() в данном случае прекрасно справится оператор целочисленного деления //
     _ = round((num % 100) / 10)
     if _ != 1 and num % 10 == 1:
         return nouns[0]
@@ -23,3 +26,4 @@ def countable_nouns(num: int, nouns: tuple[str, str, str]) -> str | None:
 # 'лет'
 
 
+# ИТОГ: хорошо, немного доработать — 4/6
