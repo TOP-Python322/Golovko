@@ -1,11 +1,8 @@
-# ===== 1 =====
-
-
 from string import ascii_letters, digits, punctuation
 
 
-def strong_password(passwd : str = '123456') -> bool:
-    """Check password strength for four criterions"""
+def strong_password(passwd: str = '123456') -> bool:
+    """Check password strength for four criteria."""
     crit1 = len(passwd) > 7
     crit2 = len(set(ascii_letters) & set(passwd)) > 0
     crit3 = len([x for x in passwd if x in digits]) > 1
@@ -13,10 +10,10 @@ def strong_password(passwd : str = '123456') -> bool:
     print(crit1 & crit2 & crit3 & crit4)
 
 
-'''
->>> strong_password('aP3:kD_l3') 
-True
+# >>> strong_password('aP3:kD_l3')
+# True
 
->>> strong_password('password')   
-False
-'''
+# >>> strong_password('password')
+# False
+
+

@@ -1,12 +1,17 @@
-# ===== 6 =====
-
-
 from math import sqrt
 
 
-def orth_triangle(cathet1 : float = 0, cathet2 : float = 0, hypotenuse : float = 0) -> float | None:
-    """Calculate third side of rectangular triangle on two others sides"""
-    if hypotenuse != 0 and (hypotenuse < cathet1 or hypotenuse < cathet2) or (hypotenuse != 0 and cathet1 !=0 and cathet2 !=0):
+def orth_triangle(
+        cathet1: float = 0,
+        cathet2: float = 0,
+        hypotenuse: float = 0
+) -> float | None:
+    """Calculate third side of rectangular triangle on two others sides."""
+    if (
+            hypotenuse != 0
+        and (hypotenuse < cathet1 or hypotenuse < cathet2)
+         or (hypotenuse != 0 and cathet1 != 0 and cathet2 != 0)
+    ):
         return None
     else:
         if hypotenuse == 0:
@@ -20,11 +25,11 @@ def orth_triangle(cathet1 : float = 0, cathet2 : float = 0, hypotenuse : float =
             return cathet2
         
 
-'''
->>> orth_triangle(cathet1=3, hypotenuse=5) 
-4.0 
->>> orth_triangle(cathet1=8, cathet2=15)   
-17.0
->>> orth_triangle(cathet2=9, hypotenuse=3)
-None
-''' 
+# >>> orth_triangle(cathet1=3, hypotenuse=5)
+# 4.0
+# >>> orth_triangle(cathet1=8, cathet2=15)
+# 17.0
+# >>> orth_triangle(cathet2=9, hypotenuse=3)
+# None
+
+
