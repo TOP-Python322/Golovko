@@ -1,7 +1,9 @@
-from string import ascii_uppercase
+from string import ascii_uppercase, digits
 from math import pow
 
 
+# ОТВЕТИТЬ: неужели вручную словарь прописывали?)
+# ПЕРЕИМЕНОВАТЬ: любой словарь задаёт соответствие (correspondence) — имя не несёт смысловой нагрузки — лучше явно скажите в имени, между чем и чем это соответствие
 correspondence_dict = {'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, 'G': 16, 'H': 17, 'I': 18, 'J': 19, 'K': 20, 'L': 21, 'M': 22, 'N': 23, 'O': 24, 'P': 25, 'Q': 26, 'R': 27, 'S': 28, 'T': 29, 'U': 30, 'V': 31, 'W': 32, 'X': 33, 'Y': 34, 'Z': 35}
 
 
@@ -115,11 +117,50 @@ def int_base(inp_num: str, base_in: int, base_out: int) -> str | None:
         result = decimal_to_some(_, base_out)
 
     return result
-     
+
+
+# КОММЕНТАРИЙ: очень много самоповторов и лишних действий в коде всех функций
+# ИСПОЛЬЗОВАТЬ: пример более оптимального кода:
+
+numbers_digits = dict(zip(range(36), digits + ascii_uppercase))
+digits_numbers = {v: k for k, v in numbers_digits.items()}
+
+def to_decimal(number: str, base: int) -> int | None:
+    return sum(
+        base**rank * digits_numbers[digit.upper()]
+        for rank, digit in enumerate(number[::-1])
+    )
+
+def from_decimal(number: int, base: int) -> str:
+    result = ''
+    while number:
+        number, remainder = divmod(number, base)
+        result += numbers_digits[remainder]
+    return result[::-1]
+
+def int_base(number: str, base_from: int, base_to: int) -> str | None:
+    correct_base_from = 2 <= base_from <= 36
+    correct_base_to = 2 <= base_to <= 36
+    correct_digits = digits_numbers[max(number).upper()] < base_from
+    if not all((correct_base_from, correct_base_to, correct_digits)):
+        return
+    # КОММЕНТАРИЙ: для более сложных предикатов (условий) лучше не вычислять каждый по отдельности, а объединить в цепочку с помощью логических операторов — тогда вычисление следующего предиката в цепочке будет зависеть от результата в предыдущем
+
+    number = to_decimal(number, base_from) if base_from != 10 else int(number)
+    return from_decimal(number, base_to)
+
 
 # >>> int_base('ff00', 16, 2)
 # '1111111100000000'
 # >>> int_base('1101010', 2, 30)
 # '3G'
+# >>> int_base('3g', 30, 2)
+# '1101010'
+# >>> int_base('4a', 16, 3)
+# '2202'
 
 
+# КОММЕНТАРИЙ: настоятельно рекомендую изучить все основные встроенные функции
+
+
+# ИТОГ: поработали много и хорошо, но качество кода надо повышать
