@@ -1,11 +1,11 @@
-# ===== 4 =====
-
-
 def repeat(func):
+    # ИСПРАВИТЬ: здесь должна быть не констатация факта, а описание функциональности, которую реализует декоратор
     """Decorator function"""
     def wrapper():
+        # УДАЛИТЬ: функция-обёртка не документируется
         """Wrapper function"""
-        for i in range(10):
+        # ИСПОЛЬЗОВАТЬ: имя _ для не используемой переменной цикла
+        for _ in range(10):
             func()
     return wrapper
 
@@ -16,17 +16,16 @@ def testing_function():
     print('python')
 
 
-'''
->>> testing_function = repeat(testing_function)
->>> testing_function()
-python
-python
-python
-python
-python
-python
-python
-python
-python
-python
-'''
+# >>> testing_function = repeat(testing_function)
+# >>> testing_function()
+# python
+# python
+# python
+# python
+# python
+# python
+# python
+# python
+# python
+# python
+
