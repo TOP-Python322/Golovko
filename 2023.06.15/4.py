@@ -40,4 +40,4 @@ def testing_function():
 # TypeError: repeat.<locals>.wrapper() takes 0 positional arguments but 1 was given
 
 
-# ИТОГ: нужно лучше, доработать — 1/3
+# ИТОГ: нужно лучше, доработать — 2/4
