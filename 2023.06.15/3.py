@@ -1,6 +1,7 @@
 def math_function_resolver(
         # ИСПОЛЬЗОВАТЬ: многострочную запись при большом количестве аннотированных параметров
         func: 'function',
+        # ИСПРАВИТЬ: для произвольных кортежа и словаря аннотируются только типы значений
         *x: tuple[int | float],
         strings: bool = False
 ) -> list[float | str]:
@@ -13,6 +14,9 @@ def math_function_resolver(
     """
     result = list(map(func, x))
     if strings:
+        # ИСПОЛЬЗОВАТЬ: f-строки
+        # result = [f'{x:.2f}' for x in result]
+        # ИСПРАВИТЬ: в условии ничего не говорилось об округлении, следовательно его не должно быть
         result = ['{l:.2f}'.format(l=x) for x in result]
     return result
 
@@ -26,3 +30,5 @@ def math_function_resolver(
 # >>> math_function_resolver(lambda x: 2.72**x, *range(1, 10), strings=True)
 # ['2.72', '7.40', '20.12', '54.74', '148.88', '404.96', '1101.49', '2996.07', '8149.30']
 
+
+# ИТОГ: хорошо, доработать — 2/3
