@@ -1,110 +1,67 @@
-# ДОБАВИТЬ: аннотацию параметра и возвращаемого значения
 def logger(func):
-    # ИСПРАВИТЬ: здесь должна быть не констатация факта, а описание функциональности, которую реализует декоратор
-    """Decorator function"""
+    """Return the actual function-logger to stdout of called function
+
+    :param func: a called function
+
+    """
     def wrapper(*args, **kwargs):
-        # УДАЛИТЬ: функция-обёртка не документируется
-        """Wrapper function"""
-        # ДОБАВИТЬ: работу с аргументами следует начать с проверки количества позиционных параметров — это количество можно найти в атрибуте func.__code__.co_argcount
-
-        # СДЕЛАТЬ: а ещё я бы на вашем месте сел и написал десяток–полтора различных вариантов сигнатур функций, проверяя для каждой значения в атрибутах __defaults__ и __kwdefaults__ — чтобы понять какие именно значения и при каких обстоятельствах попадают в эти атрибуты
-
-        # ИСПРАВИТЬ: используйте приведение к истине
-        if args == ():
-            # ИСПОЛЬЗОВАТЬ: имя _ не должно применяться вместо значащих имён переменных
-            # ИСПРАВИТЬ: в отсутствие позиционных аргументов в атрибут __defaults__ будет записан объект None — а он не является итерируемым (см. тест ниже)
-            args_ = [str(x) for x in func.__defaults__]
-        else:
-            args_ = [str(x) for x in args]
-        # ПЕРЕИМЕНОВАТЬ: используйте то же имя args_
-        s = ', '.join(args_)
-
-        kwargs_ = []
-        # ИСПРАВИТЬ: используйте приведение к истине
-        if kwargs == {}:
-            # ИСПРАВИТЬ: в отсутствие ключевых аргументов в атрибут __kwdefaults__ будет записан объект None — а у него нет метода items()
-            for k, v in func.__kwdefaults__.items():
-                # ПЕРЕИМЕНОВАТЬ: что означает t?
-                t = '' + k + '=' + str(v)
-                kwargs_.append(t)
-        # ИСПРАВИТЬ: у вас здесь реализован подход или-всё-или-ничего — но строго ключевые аргументы могут передаваться разными способами, в том числе фактически переданной может быть только часть аргументов для некоторого количества параметров со значениями по умолчанию (см. тест ниже)
-        else:
-            for k, v in kwargs.items():
-                # ИСПОЛЬЗОВАТЬ: f-строки
-                # t = '' + k + '=' + str(v)
-                t = f'{k}={v}'
-                kwargs_.append(t)
-        # ПЕРЕИМЕНОВАТЬ: используйте то же имя kwargs_
-        ss = ', '.join(kwargs_)
-
-        # КОММЕНТАРИЙ: а если бы разместили этот блок в начале тела функции-обёртки (без вывода в stdout), то не пришлось бы создавать дополнительные переменные, а можно было бы использовать те же имена args и kwargs для записи в них соответствующих строк
         try:
             result = func(*args, **kwargs)
-            # ИСПОЛЬЗОВАТЬ: f-строки
-            # print(func.__name__ + '(' + s + ', ' + ss + ') -> ' + str(result))
-            print(f'{func.__name__}({s}, {ss}) -> {result}')
-        except Exception as ex:
-            # КОММЕНТАРИЙ: необходимо избегать самоповторов в коде: здесь у вас прописана генерация очень похожей на предыдущую строки — это должно навести вас на мысль, что можно написать код так, чтобы генерация строки была прописана один раз (см. пример ниже)
-            print(func.__name__ + '(' + s + ', ' + ss + ') -> \n' + type(ex).__name__)
-        # ИСПОЛЬЗОВАТЬ: пример более оптимальной реализации
-        # try:
-        #     result = func(*args, **kwargs)
-        # except Exception as exc:
-        #     result = f'\n    {type(exc).__name__}'
-        # print(f'{func.__name__}({s}, {ss}) -> {result}')
 
+            size = func.__code__.co_argcount
+            if size:
+                args_list = [None] * size
+                if func.__defaults__:
+                    args_list = [f'{x}' for x in func.__defaults__]
+                    for i in range(size - len(func.__defaults__)):
+                        args_list.insert(0, ' ')
+                for i in range(len(args)):
+                    args_list[i] = f'{args[i]}'
+                args = ', '.join(args_list)
+            else:
+                args = ''
+
+            if func.__kwdefaults__:
+                if kwargs:
+                    for key, _ in kwargs.items():
+                        func.__kwdefaults__[key] = kwargs[key]
+                kwargs = []
+                for key, value in func.__kwdefaults__.items():
+                    kwargs.append(f'{key}={repr(value)}')
+                kwargs = ', '.join(kwargs)
+            else:
+                kwargs = ''
+
+        except Exception as exc:
+            result = f'\n    {type(exc).__name__}'
+        print(f'{func.__name__}({args}, {kwargs}) -> {result}')
     return wrapper
 
 
-# @logger
-def div_round(num1=1, num2=1, *, digits=0):
-    """Testing function"""
-    return round(num1 / num2, digits) 
-
-
-# КОММЕНТАРИЙ: результаты тестирования должны отображать точное соответствие написанному коду — если начать инспектировать скрипт в его текущем виде (с закомментированным декоратором), то вывод будет совсем не такой, как вы показываете ниже
-
-# >>> div_round(1, 3, digits=2)
-# div_round(1, 3, digits=2) -> 0.33
-
-# >>> div_round(7, 2)
-# div_round(7, 2, digits=0) -> 4.0
-
-# КОММЕНТАРИЙ: отсутствует выражение, ответственное за данный вывод
-# div_round(5, 0, digits=0) ->
-# ZeroDivisionError
-
-# >>> div_round(5)
-# КОММЕНТАРИЙ: должно быть указано использование значения по умолчанию для второго позиционного аргумента
-# div_round(5, digits=0) -> 5.0
-
-# >>> def func(*, a=0, b='\t'):
-# ...     pass
-# ...
-# >>> func = logger(func)
-# >>> func(a=1)
-# КОММЕНТАРИЙ: отсутствие позиционных аргументов — не повод вываливаться с исключением (также как и отсутствие ключевых)
-# ...
-# TypeError: 'NoneType' object is not iterable
-
-# >>> def monitor(pos_key, *, key1=None, key2=True):
-# ...     print(f'  {pos_key=}, {key1=}, {key2=}')
-# ...
-# >>> monitor = logger(monitor)
-# >>> monitor(1)
-#   pos_key = 1, key1 = None, key2 = True
-# monitor(1, key1=None, key2=True) -> None
-# >>>
-# >>> monitor('a', key1=47)
-#   pos_key = 'a', key1 = 47, key2 = True
-# КОММЕНТАРИЙ: должно быть также показано значение key2
-# monitor(a, key1=47) -> None
-
-# КОММЕНТАРИЙ: вы совершенно напрасно столь легкомысленно относитесь к требуемым мной тестам — это существенная часть обучения, к ней необходимо подходить столь же серьёзно и ответственно как и к написанию кода
-
-
-# ИТОГ: переделать — 1/6
-
-
-# КОММЕНТАРИЙ по всему заданию: с кодом, оформленным так, как вы пишете уже которое задание подряд, вы не пройдёте ни одно техническое собеседование, даже если алгоритмически код будет безупречен (а до этого пока весьма далеко) — специалисты, регулярно просматривающие десятки ответов кандидатов, ваш ответ выкинут только взглянув, потому что на его чтение надо потратить в два–четыре раза больше сил и времени — это никому не интересно
-
+'''
+ 16:02:33 > python -i 5.py
+>>> def div_round(num1=1, num2=1, *, digits=0):
+...     return round(num1 / num2, digits)
+...
+>>> div_round = logger(div_round)
+>>> div_round(1, 3, digits=2)
+div_round(1, 3, digits=2) -> 0.33
+>>> div_round(5, 0, digits=0)
+div_round((5, 0), {'digits': 0}) ->
+    ZeroDivisionError
+>>> div_round(5)
+div_round(5, 1, digits=2) -> 5.0
+>>> def func(*, a=0, b='\t'):
+...     pass
+...
+>>> func = logger(func)
+>>> func(a=1)
+func(, a=1, b='\t') -> None
+>>> def monitor(pos_key, pos_key2=2 , *, key1=None, key2=True):
+...     print(f'  {pos_key=}, {pos_key2=}, {key1=}, {key2=}')
+...
+>>> monitor = logger(monitor)
+>>> monitor(1)
+  pos_key=1, pos_key2=2, key1=None, key2=True
+monitor(1, 2, key1=None, key2=True) -> None
+'''
