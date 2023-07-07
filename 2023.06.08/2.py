@@ -1,5 +1,8 @@
 def taxi_cost(length: int, wait: int = 0) -> int | None:
-    """Calculate cost of trip on two parameters, length of driveway and waiting time."""
+    """Calculate cost of trip on two parameters,
+    length of driveway and waiting time.
+
+    """
     if length < 0 or wait < 0:
         return None
     if length == 0:
@@ -9,19 +12,16 @@ def taxi_cost(length: int, wait: int = 0) -> int | None:
     return cost
 
 
-# >>> taxi_cost(1500)
-# 140
-# >>> taxi_cost(2560)
-# 182
-# >>> taxi_cost(0, 5)
-# 175
-# >>> taxi_cost(42130, 8)
-# 1790
-# >>> taxi_cost(-300)
-# КОММЕНТАРИЙ: не стоит вручную редактировать вывод, это может привести к некорректной интерпретации результата — в данном случае, при выполнении выражения выше в режиме инспекции, вы не получите какого либо вывода
-# None
-
-# КОММЕНТАРИЙ: передаваемые данные в примерах проверки нужны вам для самопроверки, стоит также думать и о других вариантах входных данных и выполнять код с собственными данными — учитесь самостоятельно тестировать свой код, на базовом уровне это должен уметь делать каждый разработчик
-
-
-# ИТОГ: отлично — 4/4
+'''
+  9:01:31 > python -i 2.py
+>>> taxi_cost(1500)
+140
+>>> taxi_cost(2560)
+182
+>>> taxi_cost(0, 5)
+175
+>>> taxi_cost(42130, 8)
+1790
+>>> taxi_cost(-300)
+>>>
+'''

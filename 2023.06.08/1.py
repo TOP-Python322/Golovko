@@ -1,33 +1,24 @@
-from string import ascii_letters, digits, punctuation
+from string import ascii_letters, digits, ascii_lowercase, ascii_uppercase
 
 
-# ИСПРАВИТЬ: согласно условию, аргумент должен быть обязательным — то есть без значения по умолчанию
-def strong_password(passwd: str = '123456') -> bool:
+def strong_password(passwd: str) -> bool:
     """Check password strength for four criteria."""
     crit1 = len(passwd) > 7
-    # ИСПРАВИТЬ: эта проверка не гарантирует наличие буквенных символов обоих регистров (см. пример ниже)
-    crit2 = len(set(ascii_letters) & set(passwd)) > 0
+    crit2 = (len(set(ascii_lowercase) & set(passwd)) > 0) \
+        and len(set(ascii_uppercase) & set(passwd)) > 0
     crit3 = len([x for x in passwd if x in digits]) > 1
-    # ИСПРАВИТЬ: согласно условию, в пароле должны присутствовать символы прочих категорий, а не только знаки препинания (см. пример ниже)
-    crit4 = len(set(punctuation) & set(passwd)) > 0
-    # ИСПРАВИТЬ: здесь должен быть возврат, а не вывод в stdout
-    print(crit1 & crit2 & crit3 & crit4)
-    # КОММЕНТАРИЙ: в контексте логических выражений всё же рекомендуется использовать логические, а не побитовые операторы — последние предназначены в первую очередь для побитовых операций с числами (подробнее: https://realpython.com/python-bitwise-operators/#overview-of-pythons-bitwise-operators)
+    crit4 = len(set(passwd) - set(ascii_letters) - set(digits)) > 0
+    return (crit1 and crit2 and crit3 and crit4)
 
 
-# >>> strong_password('aP3:kD_l3')
-# True
-
-# >>> strong_password('password')
-# False
-
-# >>> strong_password('aabbcc12!')
-# КОММЕНТАРИЙ: а должно быть False
-# True
-
-# >>> strong_password('aaBBcc 12')
-# КОММЕНТАРИЙ: а должно быть True
-# False
-
-
-# ИТОГ: нужно лучше — 3/7
+'''
+  8:50:33 > python -i 1.py
+>>> strong_password('aP3:kD_l3')
+True
+>>> strong_password('password')
+False
+>>> strong_password('aabbcc12!')
+False
+>>> strong_password('aaBBcc 12')
+True
+'''
